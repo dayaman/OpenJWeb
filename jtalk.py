@@ -1,22 +1,27 @@
+import platform
 import subprocess
+import time
 from datetime import datetime
+
+pf = platform.system()
 
 def jtalk(t, server_id=None):
     open_jtalk = ['open_jtalk']
-    mech = ['-x', '/usr/local/share/open_jtalk_dic']
-    htsvoice = ['-m', '/usr/local/share/hts_voice/htsvoice-tohoku-f01/tohoku-f01-neutral.htsvoice']
+    filename = '{}.wav'.format(time.time())
+    if pf == 'Darwin':
+        mech = ['-x', '/usr/local/Cellar/open-jtalk/1.11/dic']
+        htsvoice = ['-m', '/usr/local/Cellar/open-jtalk/1.11/voice/htsvoice-tohoku-f01/tohoku-f01-neutral.htsvoice']
+    else:
+        mech = ['-x', '/usr/local/share/open_jtalk_dic']
+        htsvoice = ['-m', '/usr/local/share/hts_voice/htsvoice-tohoku-f01/tohoku-f01-neutral.htsvoice']
+    
     speed = ['-r', '1.0']
-    outwav = ['-ow', 'out.wav']
+    outwav = ['-ow', '{}'.format(filename)]
     cmd = open_jtalk + mech + htsvoice + speed + outwav
     c = subprocess.Popen(cmd, stdin=subprocess.PIPE)
     c.communicate(t.encode())
     c.wait()
-    with open('out.wav', 'rb') as f:
-        rawbin = f
-
-    return rawbin
-    # aplay = ['afplay', 'out.wav']
-    # wr = subprocess.Popen(aplay)
+    return filename
 
 def say_datetime():
     d = datetime.now()
