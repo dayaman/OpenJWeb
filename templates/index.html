@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- Google Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+
+  <!-- CSS Reset -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+
+  <!-- Milligram CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+
+  <!-- You should properly set the path from the main file. -->
+</head>
+
+<body>
+  <main>
+    <div class="container">
+      <h1>OpenJWeb Demo</h1>
+      <form>
+        <fieldset>
+          <label for="textField">Comment</label>
+          <textarea placeholder="nekochan..." id="textField"></textarea>
+          <input class="button-primary" id="submit" type="submit" value="Send">
+        </fieldset>
+      </form>
+      <audio id="player"></audio>
+    </div>
+  </main>
+  <script>
+    const $submit = document.getElementById("submit");
+    const $textField = document.getElementById("textField");
+    const $player = document.getElementById("player");
+
+    $submit.addEventListener("click", (e) => {
+      $submit.disabled = true;
+      (async () => {
+        try {
+          const resp = await fetch("/", { method: "POST", body: JSON.stringify({ text: $textField.value }) })
+          const blob = await resp.blob();
+          $player.src = URL.createObjectURL(blob);
+          $player.play();
+        } finally {
+          $submit.disabled = false;
+        }
+      })()
+      e.preventDefault()
+    })
+  </script>
+</body>
+
+</html>
